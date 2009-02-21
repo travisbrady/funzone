@@ -1,4 +1,9 @@
+module Main where
+--Using uvector
+--partition a vector
+--compute median
 import Data.Array.Vector
+import System.Random
 
 --Inserts el into either lt, eq or gt depending on the results of the compare with k
 tripleSlot :: Int -> (UArr Int, UArr Int, UArr Int) -> Int -> (UArr Int, UArr Int, UArr Int)
@@ -14,7 +19,34 @@ empInt = emptyU
 --that are LT, EQ, and GT
 partition :: Int -> UArr Int -> (UArr Int, UArr Int, UArr Int)
 partition k ua = foldlU folder (empInt, empInt, empInt) ua
-    where folder = tripleSlot k
+    where 
+        folder = tripleSlot k
+        startTriple = (empInt, empInt, empInt)
+
+
+select k s = do
+    case (lengthU s) `compare` 1 of
+        LT -> return Nothing
+        EQ -> return $ Just (indexU s 0)
+        GT -> do
+            let len = lengthU s
+            idx <- (randomRIO (0, len-1))::IO Int
+            let a = indexU s idx
+            let (lt, eq, gt) = partition a s
+            let llt = lengthU lt
+            if llt >= k
+                then
+                    select k lt
+                else do
+                    let leq = lengthU eq
+                    if (llt + leq) >= k
+                        then return $ Just a
+                        else select (k - llt - leq) gt
+
+findMedian ua = do
+    let k = fst $ divMod (lengthU ua) 2
+    med <- select k ua
+    return med
 
 --test data
 stuff :: UArr Int
@@ -26,4 +58,7 @@ main = do
     print lt
     print eq
     print gt
+    let a = (enumFromToU 1 200000)::UArr Int
+    med <- findMedian a
+    print med
 
