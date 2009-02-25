@@ -18,13 +18,19 @@ regress x y = (a, b)
           a = (sxy * n - sy * sx)/det
           b = (sxx * sy - sx * sxy)/det
 
-covariance x y = (fromIntegral lengthU)
-                 $ zipWithU (*)
-                  (zipWithU (-) x (replicate mean_x))
-                  (zipWith (-) y (replicate mean_y))
+covariance x y = divN . sumU $ zipWithU (*)
+                  (zipWithU (-) x (replicateU n mean_x))
+                  (zipWithU (-) y (replicateU n mean_y))
                 where
+                    n = lengthU x
+                    divN thing = thing/(fromIntegral n)
                     mean_x = mean x
                     mean_y = mean y
+
+testX :: UArr Double
+testX = toU [1.0, 2.0, 3.0, 4.0]
+testY :: UArr Double
+testY = toU [5.0, 10.0, 15.0, 20.0]
 
 --main = do
 --    let x = toU [1.0, 2.0, 3.0, 4.0]
