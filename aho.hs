@@ -1,3 +1,4 @@
+--Using pseudocode from http://ndevilla.free.fr/median/median/index.html
 import System.Random
 import Data.List ((!!))
 
