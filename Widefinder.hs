@@ -6,6 +6,7 @@ import qualified Data.Map as M
 import qualified Data.ByteString.Char8 as B
 import Text.Regex.PCRE.Light
 import Data.ByteString.Search.BoyerMoore
+import Data.Function (on)
 
 get = B.pack "GET /ongoing/When"
 
@@ -22,6 +23,6 @@ main = do
     let pnames = map (\x -> x!!1) matches
     let freqFold = foldl' g M.empty pnames 
                     where g accum k = M.insertWith' (+) k 1 accum
-    let ll = sortBy ((. snd) . flip compare . snd) $ M.toList freqFold
+    let ll = sortBy (flip compare `on` snd) $ M.toList freqFold
     mapM_ print $ take 10 ll
 
