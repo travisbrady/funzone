@@ -13,7 +13,7 @@ def llr(data, h):
     @param h: bandwidth
 
     You can use this as you might a moving average or other filter.
-    The output value at every point is a determined
+    The output value at every point is determined
     by a weighted linear regression over the points
     in the window with width h
     >>> d = [0, 10, 5, 0, 20, 30, 50]
